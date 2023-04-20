@@ -126,6 +126,10 @@ ok      cmdline 0.322s
 
 ---
 
+## Building for Debug Purposes
 
+If you want to open the executable, say perhaps with GDB, simply do the following:
+
+    go build -gcflags "-N -l" -o cmdline_go cmdline_go.go
 
 
