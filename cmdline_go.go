@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"os"
 )
-
-const version = "1.1.3"
+const version = "1.1.4"
 
 type CommandLine struct {
 	Debug        bool
@@ -13,6 +12,7 @@ type CommandLine struct {
 	Help         bool
 	FileName     string
 	InputText    string
+	OutputText   string // new field to store output text
 	HelpText     string
 	VersionText  string
 	LogToConsole bool   // new flag to log output to console
@@ -74,21 +74,7 @@ func (c *CommandLine) PrintReport() {
 	fmt.Printf("Report for file %s\n", c.FileName)
 }
 
-func (c *CommandLine) Process() error {
-	if c.Help {
-		c.PrintHelp()
-		os.Exit(0)
-	}
-	if c.Version {
-		c.PrintVersion()
-		os.Exit(0)
-	}
-	if c.FileName != "" {
-		c.PrintReport()
-		os.Exit(0)
-	}
-
-	// new code to log output to file
+func (c *CommandLine) PrintOutput() error {
 	if c.LogToConsole {
 		if c.LogFileName == "" {
 			return fmt.Errorf("-o requires a log filename argument")
@@ -101,10 +87,39 @@ func (c *CommandLine) Process() error {
 		if c.Debug {
 			fmt.Fprintf(os.Stderr, "Logging to file%s\n", c.LogFileName)
 		}
-		fmt.Fprintln(logFile, "Log output:")
-		fmt.Fprintln(logFile, "-----------")
-		fmt.Fprintln(logFile, c.InputText)
-		fmt.Fprintln(logFile, "-----------")
+		fmt.Fprintln(logFile, c.OutputText)
+	} else {
+		fmt.Println(c.OutputText)
+	}
+	return nil
+}
+
+func (c *CommandLine) Process() error {
+	if c.Help {
+		c.PrintHelp()
+		os.Exit(0)
+	}
+
+	if c.Version {
+		c.PrintVersion()
+		os.Exit(0)
+	}
+
+	if c.FileName != "" {
+		c.PrintReport()
+	}
+
+	if c.InputText != "" {
+		c.OutputText = c.InputText
+	}
+
+	if c.OutputText == "" {
+		return fmt.Errorf("no input provided")
+	}
+
+	err := c.PrintOutput()
+	if err != nil {
+		return err
 	}
 
 	return nil
