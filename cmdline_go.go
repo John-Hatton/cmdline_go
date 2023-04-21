@@ -6,15 +6,16 @@ import (
 	"strings"
 )
 
-const version = "1.0.9"
+const version = "1.1.0"
 
 type CommandLine struct {
-	Debug     bool
-	Version   bool
-	Help      bool
-	FileName  string
-	InputText string
-	HelpText  string // unique help message
+	Debug       bool
+	Version     bool
+	Help        bool
+	FileName    string
+	InputText   string
+	HelpText    string
+	VersionText string
 }
 
 func (c *CommandLine) Parse(args []string) error {
@@ -58,7 +59,11 @@ func (c *CommandLine) PrintHelp() {
 }
 
 func (c *CommandLine) PrintVersion() {
-	fmt.Printf("Version: %s\n", version)
+	if !c.Version {
+		str := fmt.Sprintf("Version: %s\n", version)
+		c.VersionText = str
+	}
+	c.PrintVersion()
 }
 
 func (c *CommandLine) PrintReport() {
