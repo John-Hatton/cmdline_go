@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const version = "1.1.5"
+const version = "1.2.0"
 
 type CommandLine struct {
 	Debug        bool
