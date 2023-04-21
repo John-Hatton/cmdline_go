@@ -160,7 +160,7 @@ func Test_CommandLine_FileNameFlag(t *testing.T) {
 	if err != nil {
 		t.Errorf("Test case 6 failed. Expected no error, but got: %v", err)
 	}
-	expected6 := CommandLine{Debug: false, Version: false, Help: false, FileName: "test.txt"}
+	expected6 := CommandLine{File: true, Debug: false, Version: false, Help: false, FileName: "test.txt"}
 	if !reflect.DeepEqual(cmd, expected6) {
 		t.Errorf("Test case 6 failed. Expected: %v, but got: %v", expected6, cmd)
 	}
@@ -174,7 +174,7 @@ func Test_CommandLine_InputTextFlag(t *testing.T) {
 	if err != nil {
 		t.Errorf("Test case 9 failed. Expected no error, but got: %v", err)
 	}
-	expected9 := CommandLine{Debug: false, Version: false, Help: false, FileName: "", InputText: "test input", HelpText: "", VersionText: "", LogToConsole: false, LogFileName: ""}
+	expected9 := CommandLine{Input: true, Debug: false, Version: false, Help: false, FileName: "", InputText: "test input", HelpText: "", VersionText: "", LogToConsole: false, LogFileName: ""}
 	if !reflect.DeepEqual(cmd, expected9) {
 		t.Errorf("Test case 9 failed. Expected: %v, but got: %v", expected9, cmd)
 	}
@@ -188,7 +188,7 @@ func Test_CommandLine_OutputTextFlag(t *testing.T) {
 	if err != nil {
 		t.Errorf("Test case 10 failed. Expected no error, but got: %v", err)
 	}
-	expected10 := CommandLine{Debug: false, Version: false, Help: false, FileName: "", InputText: "test input", HelpText: "", VersionText: "", LogToConsole: false, LogFileName: ""}
+	expected10 := CommandLine{Input: true, Debug: false, Version: false, Help: false, FileName: "", InputText: "test input", HelpText: "", VersionText: "", LogToConsole: false, LogFileName: ""}
 	if !reflect.DeepEqual(cmd, expected10) {
 		t.Errorf("Test case 10 failed. Expected: %v, but got: %v", expected10, cmd)
 	}
@@ -202,7 +202,7 @@ func Test_CommandLine_LogFileNameFlag(t *testing.T) {
 	if err != nil {
 		t.Errorf("Test case 11 failed. Expected no error, but got: %v", err)
 	}
-	expected11 := CommandLine{Debug: false, Version: false, Help: false, FileName: "", InputText: "test input", HelpText: "", VersionText: "", LogToConsole: false, LogFileName: "test.log"}
+	expected11 := CommandLine{Input: true, Debug: false, Log: true, Version: false, Help: false, FileName: "", InputText: "test input", HelpText: "", VersionText: "", LogToConsole: true, LogFileName: "test.log"}
 	if !reflect.DeepEqual(cmd, expected11) {
 		t.Errorf("Test case 11 failed. Expected: %v, but got: %v", expected11, cmd)
 	}

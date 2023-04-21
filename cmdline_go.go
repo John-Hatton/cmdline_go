@@ -8,6 +8,10 @@ import (
 const version = "1.2.0"
 
 type CommandLine struct {
+	Input        bool
+	Output       bool
+	File         bool
+	Log          bool
 	Debug        bool
 	Version      bool
 	Help         bool
@@ -34,16 +38,19 @@ func (c *CommandLine) Parse(args []string) error {
 			if i >= len(args) {
 				return fmt.Errorf("-f requires a filename argument")
 			}
+			c.File = true
 			c.FileName = args[i]
 		case "-i", "-I", "--input", "--INPUT":
 			i++
 			if i >= len(args) {
 				return fmt.Errorf("-i requires an input string argument")
 			}
+			c.Input = true
 			c.InputText = args[i]
 		case "-o", "-O", "--output", "--OUTPUT":
 			if i+1 < len(args) {
 				c.LogFileName = args[i+1]
+				c.Output = true
 				c.LogToConsole = false
 				i++
 			}
@@ -52,7 +59,8 @@ func (c *CommandLine) Parse(args []string) error {
 			if i >= len(args) {
 				return fmt.Errorf("-l requires a log filename argument")
 			}
-			c.LogToConsole = false
+			c.Log = true
+			c.LogToConsole = true
 			c.LogFileName = args[i]
 		default:
 			return fmt.Errorf("unknown option: %s", args[i])
@@ -65,7 +73,6 @@ func (c *CommandLine) PrintHelp() {
 	if c.HelpText == "" {
 		c.HelpText = "Usage: cmdline_go [OPTIONS]\n\nOptions:\n  -d, --debug        Set DEBUG flag true\n  -v, --version      Print version number\n  -h, --help         Print this table\n  -f FILENAME       Set Filename\n  -i INPUT_STRING   Process an input string\n  -o LOG_TO_CONSOLE Log output to console\n  -l LOG_FILENAME   Save output to log file\n"
 	}
-
 	fmt.Println(c.HelpText) // print unique help message
 }
 
