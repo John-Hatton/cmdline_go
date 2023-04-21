@@ -1,4 +1,4 @@
-package main
+package cmdline_go
 
 import (
 	"fmt"

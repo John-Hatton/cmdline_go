@@ -1,4 +1,4 @@
-package main
+package cmdline_go
 
 import (
 	"fmt"
@@ -13,21 +13,6 @@ type CommandLine struct {
 	Version  bool
 	Help     bool
 	FileName string
-}
-
-func main() {
-	args := os.Args[1:]
-	cmdLine := CommandLine{}
-	err := cmdLine.Parse(args)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	err = cmdLine.Process()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 }
 
 func (c *CommandLine) Parse(args []string) error {
