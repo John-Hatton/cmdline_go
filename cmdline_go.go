@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-const version = "1.0.3"
+const version = "1.0.5"
 
 type CommandLine struct {
 	Debug     bool
