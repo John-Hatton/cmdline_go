@@ -1,30 +1,29 @@
-name: Release
+name: Create Release
 on:
   push:
     branches:
       - main
-
 jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
-      - name: Build and Release
+          go-version: 1.16
+      - name: Get Version
+        id: get_version
+        run: echo "::set-output name=version::$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' cmdline_go.go)"
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' cmdline_go.go)
-          echo "Creating release $VERSION"
-          go install github.com/mitchellh/gox
-          mkdir -p build
-          gox -osarch="linux/amd64 darwin/amd64 windows/amd64" -output="build/cmdline_go_{{.OS}}_{{.Arch}}" -ldflags "-X main.version=$VERSION" ./cmdline_go
-          for f in build/*; do
-            echo "Uploading $f"
-            gh release upload -R ${{ github.repository }} --clobber $VERSION $f
-          done
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: Release ${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: false
