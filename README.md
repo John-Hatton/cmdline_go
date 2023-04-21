@@ -2,6 +2,8 @@
 
 ### A Go Package read and process command line parameters
 
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/John-Hatton/cmdline_go/BuildStatus.yml)
+
 ---
 
 
