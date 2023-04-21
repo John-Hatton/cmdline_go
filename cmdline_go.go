@@ -3,10 +3,9 @@ package cmdline_go
 import (
 	"fmt"
 	"os"
-	"strings"
 )
 
-const version = "1.1.2"
+const version = "1.1.3"
 
 type CommandLine struct {
 	Debug        bool
@@ -21,44 +20,35 @@ type CommandLine struct {
 }
 
 func (c *CommandLine) Parse(args []string) error {
-	if len(args) == 0 {
-		return fmt.Errorf("No arguments provided")
-	}
 	for i := 0; i < len(args); i++ {
-		arg := args[i]
-		switch strings.ToLower(arg) {
-		case "-d", "-debug":
+		switch args[i] {
+		case "-d":
 			c.Debug = true
-		case "-v", "-version":
+		case "-v":
 			c.Version = true
-		case "-h", "-help":
+		case "-h":
 			c.Help = true
-		case "-i":
-			if i+1 < len(args) {
-				c.InputText = args[i+1]
-				return nil
-			} else {
-				return fmt.Errorf("-i requires an input string argument")
-			}
 		case "-f":
-			if i+1 < len(args) {
-				c.FileName = args[i+1]
-				return nil
-			} else {
+			i++
+			if i >= len(args) {
 				return fmt.Errorf("-f requires a filename argument")
 			}
+			c.FileName = args[i]
 		case "-o":
-			if c.LogFileName == "" {
-				return fmt.Errorf("-o requires a log filename argument")
-			}
-			c.LogToConsole = true
-		case "-l":
 			if i+1 < len(args) {
 				c.LogFileName = args[i+1]
-				return nil
-			} else {
+				c.LogToConsole = true
+				i++
+			}
+		case "-l":
+			i++
+			if i >= len(args) {
 				return fmt.Errorf("-l requires a log filename argument")
 			}
+			c.LogToConsole = true
+			c.LogFileName = args[i]
+		default:
+			return fmt.Errorf("unknown option: %s", args[i])
 		}
 	}
 	return nil
