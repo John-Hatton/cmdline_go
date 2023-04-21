@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-const version = "1.0.6"
+const version = "1.0.7"
 
 type CommandLine struct {
 	Debug     bool
@@ -60,6 +60,10 @@ func (c *CommandLine) PrintHelp() {
 	fmt.Println("  -h, -help       Print this table")
 	fmt.Println("  -f FILENAME     Print report about file")
 	fmt.Println("  -i INPUT_STRING Process an input string")
+}
+
+func (c *CommandLine) PrintHelpText() {
+	fmt.Println(c.HelpText)
 }
 
 func (c *CommandLine) PrintVersion() {
