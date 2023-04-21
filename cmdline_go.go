@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-const version = "1.1.0"
+const version = "1.1.1"
 
 type CommandLine struct {
 	Debug       bool
@@ -63,7 +63,7 @@ func (c *CommandLine) PrintVersion() {
 		str := fmt.Sprintf("Version: %s\n", version)
 		c.VersionText = str
 	}
-	c.PrintVersion()
+	fmt.Println(c.VersionText)
 }
 
 func (c *CommandLine) PrintReport() {
