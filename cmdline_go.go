@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-const version = "1.0.8"
+const version = "1.0.9"
 
 type CommandLine struct {
 	Debug     bool
@@ -50,20 +50,11 @@ func (c *CommandLine) Parse(args []string) error {
 }
 
 func (c *CommandLine) PrintHelp() {
-	fmt.Println(c.HelpText) // print unique help message
-	fmt.Println("")
-	fmt.Println("Usage: cmdline_go [OPTIONS]")
-	fmt.Println("")
-	fmt.Println("Options:")
-	fmt.Println("  -d, -debug      Set DEBUG flag true")
-	fmt.Println("  -v, -version    Print version number")
-	fmt.Println("  -h, -help       Print this table")
-	fmt.Println("  -f FILENAME     Print report about file")
-	fmt.Println("  -i INPUT_STRING Process an input string")
-}
+	if c.HelpText == "" {
+		c.HelpText = "Usage: cmdline_go [OPTIONS]\n\nOptions:\n  -d, -debug      Set DEBUG flag true\n  -v, -version    Print version number\n  -h, -help       Print this table\n  -f FILENAME     Print report about file\n  -i INPUT_STRING Process an input string\n"
+	}
 
-func (c *CommandLine) PrintHelpText() {
-	fmt.Println(c.HelpText)
+	fmt.Println(c.HelpText) // print unique help message
 }
 
 func (c *CommandLine) PrintVersion() {
