@@ -3,10 +3,9 @@ package cmdline_go
 import (
 	"fmt"
 	"os"
-	"strings"
 )
 
-const version = "1.1.2"
+const version = "1.1.4"
 
 type CommandLine struct {
 	Debug        bool
@@ -14,6 +13,7 @@ type CommandLine struct {
 	Help         bool
 	FileName     string
 	InputText    string
+	OutputText   string // new field to store output text
 	HelpText     string
 	VersionText  string
 	LogToConsole bool   // new flag to log output to console
@@ -21,44 +21,35 @@ type CommandLine struct {
 }
 
 func (c *CommandLine) Parse(args []string) error {
-	if len(args) == 0 {
-		return fmt.Errorf("No arguments provided")
-	}
 	for i := 0; i < len(args); i++ {
-		arg := args[i]
-		switch strings.ToLower(arg) {
-		case "-d", "-debug":
+		switch args[i] {
+		case "-d":
 			c.Debug = true
-		case "-v", "-version":
+		case "-v":
 			c.Version = true
-		case "-h", "-help":
+		case "-h":
 			c.Help = true
-		case "-i":
-			if i+1 < len(args) {
-				c.InputText = args[i+1]
-				return nil
-			} else {
-				return fmt.Errorf("-i requires an input string argument")
-			}
 		case "-f":
-			if i+1 < len(args) {
-				c.FileName = args[i+1]
-				return nil
-			} else {
+			i++
+			if i >= len(args) {
 				return fmt.Errorf("-f requires a filename argument")
 			}
+			c.FileName = args[i]
 		case "-o":
-			if c.LogFileName == "" {
-				return fmt.Errorf("-o requires a log filename argument")
-			}
-			c.LogToConsole = true
-		case "-l":
 			if i+1 < len(args) {
 				c.LogFileName = args[i+1]
-				return nil
-			} else {
+				c.LogToConsole = true
+				i++
+			}
+		case "-l":
+			i++
+			if i >= len(args) {
 				return fmt.Errorf("-l requires a log filename argument")
 			}
+			c.LogToConsole = true
+			c.LogFileName = args[i]
+		default:
+			return fmt.Errorf("unknown option: %s", args[i])
 		}
 	}
 	return nil
@@ -84,21 +75,7 @@ func (c *CommandLine) PrintReport() {
 	fmt.Printf("Report for file %s\n", c.FileName)
 }
 
-func (c *CommandLine) Process() error {
-	if c.Help {
-		c.PrintHelp()
-		os.Exit(0)
-	}
-	if c.Version {
-		c.PrintVersion()
-		os.Exit(0)
-	}
-	if c.FileName != "" {
-		c.PrintReport()
-		os.Exit(0)
-	}
-
-	// new code to log output to file
+func (c *CommandLine) PrintOutput() error {
 	if c.LogToConsole {
 		if c.LogFileName == "" {
 			return fmt.Errorf("-o requires a log filename argument")
@@ -111,10 +88,39 @@ func (c *CommandLine) Process() error {
 		if c.Debug {
 			fmt.Fprintf(os.Stderr, "Logging to file%s\n", c.LogFileName)
 		}
-		fmt.Fprintln(logFile, "Log output:")
-		fmt.Fprintln(logFile, "-----------")
-		fmt.Fprintln(logFile, c.InputText)
-		fmt.Fprintln(logFile, "-----------")
+		fmt.Fprintln(logFile, c.OutputText)
+	} else {
+		fmt.Println(c.OutputText)
+	}
+	return nil
+}
+
+func (c *CommandLine) Process() error {
+	if c.Help {
+		c.PrintHelp()
+		os.Exit(0)
+	}
+
+	if c.Version {
+		c.PrintVersion()
+		os.Exit(0)
+	}
+
+	if c.FileName != "" {
+		c.PrintReport()
+	}
+
+	if c.InputText != "" {
+		c.OutputText = c.InputText
+	}
+
+	if c.OutputText == "" {
+		return fmt.Errorf("no input provided")
+	}
+
+	err := c.PrintOutput()
+	if err != nil {
+		return err
 	}
 
 	return nil
