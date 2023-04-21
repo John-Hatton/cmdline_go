@@ -6,13 +6,14 @@ import (
 	"strings"
 )
 
-const version = "1.0.0"
+const version = "1.0.3"
 
 type CommandLine struct {
-	Debug    bool
-	Version  bool
-	Help     bool
-	FileName string
+	Debug     bool
+	Version   bool
+	Help      bool
+	FileName  string
+	InputText string
 }
 
 func (c *CommandLine) Parse(args []string) error {
@@ -28,9 +29,13 @@ func (c *CommandLine) Parse(args []string) error {
 			c.Version = true
 		case "-h", "-help":
 			c.Help = true
-		case "-j":
-			fmt.Println("John says hi!")
-			os.Exit(0)
+		case "-i":
+			if i+1 < len(args) {
+				c.InputText = args[i+1]
+				return nil
+			} else {
+				return fmt.Errorf("-i requires an input string argument")
+			}
 		case "-f":
 			if i+1 < len(args) {
 				c.FileName = args[i+1]
@@ -44,13 +49,14 @@ func (c *CommandLine) Parse(args []string) error {
 }
 
 func (c *CommandLine) PrintHelp() {
-	fmt.Println("Usage: cmdline [OPTIONS]")
+	fmt.Println("Usage: cmdline_go [OPTIONS]")
 	fmt.Println("")
 	fmt.Println("Options:")
-	fmt.Println("  -d, -debug  Set DEBUG flag true")
-	fmt.Println("  -v, -version  Print version number")
-	fmt.Println("  -h, -help  Print this table")
-	fmt.Println("  -f FILENAME  Print report about File")
+	fmt.Println("  -d, -debug      Set DEBUG flag true")
+	fmt.Println("  -v, -version    Print version number")
+	fmt.Println("  -h, -help       Print this table")
+	fmt.Println("  -f FILENAME     Print report about file")
+	fmt.Println("  -i INPUT_STRING Process an input string")
 }
 
 func (c *CommandLine) PrintVersion() {
