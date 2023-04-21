@@ -1,0 +1,11 @@
+name: BuildStatus
+on: push
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Build
+        run: make build
