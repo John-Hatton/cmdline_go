@@ -46,7 +46,7 @@ To verify it's done, do the following:
 
 ## Setting Up Go
 
-Next you will need to create src, pkg, and bin directories in your new GOROOT folder.
+Next you will need to create src, pkg, and bin directories in your new GOPATH folder.
 
     mkdir src
     mkdir pkg
