@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 )
-const version = "1.1.4"
+
+const version = "1.1.5"
 
 type CommandLine struct {
 	Debug        bool
@@ -22,30 +23,36 @@ type CommandLine struct {
 func (c *CommandLine) Parse(args []string) error {
 	for i := 0; i < len(args); i++ {
 		switch args[i] {
-		case "-d":
+		case "-d", "-D", "--debug", "--DEBUG":
 			c.Debug = true
-		case "-v":
+		case "-v", "-V", "--version", "--VERSION":
 			c.Version = true
-		case "-h":
+		case "-h", "-H", "--help", "--HELP":
 			c.Help = true
-		case "-f":
+		case "-f", "-F", "--filename", "--FILENAME":
 			i++
 			if i >= len(args) {
 				return fmt.Errorf("-f requires a filename argument")
 			}
 			c.FileName = args[i]
-		case "-o":
+		case "-i", "-I", "--input", "--INPUT":
+			i++
+			if i >= len(args) {
+				return fmt.Errorf("-i requires an input string argument")
+			}
+			c.InputText = args[i]
+		case "-o", "-O", "--output", "--OUTPUT":
 			if i+1 < len(args) {
 				c.LogFileName = args[i+1]
-				c.LogToConsole = true
+				c.LogToConsole = false
 				i++
 			}
-		case "-l":
+		case "-l", "-L", "--logfile", "--LOGFILE":
 			i++
 			if i >= len(args) {
 				return fmt.Errorf("-l requires a log filename argument")
 			}
-			c.LogToConsole = true
+			c.LogToConsole = false
 			c.LogFileName = args[i]
 		default:
 			return fmt.Errorf("unknown option: %s", args[i])
@@ -56,7 +63,7 @@ func (c *CommandLine) Parse(args []string) error {
 
 func (c *CommandLine) PrintHelp() {
 	if c.HelpText == "" {
-		c.HelpText = "Usage: cmdline_go [OPTIONS]\n\nOptions:\n  -d, -debug        Set DEBUG flag true\n  -v, -version      Print version number\n  -h, -help         Print this table\n  -f FILENAME       Print report about file\n  -i INPUT_STRING   Process an input string\n  -o LOG_TO_CONSOLE Log output to console\n  -l LOG_FILENAME   Save output to log file\n"
+		c.HelpText = "Usage: cmdline_go [OPTIONS]\n\nOptions:\n  -d, --debug        Set DEBUG flag true\n  -v, --version      Print version number\n  -h, --help         Print this table\n  -f FILENAME       Set Filename\n  -i INPUT_STRING   Process an input string\n  -o LOG_TO_CONSOLE Log output to console\n  -l LOG_FILENAME   Save output to log file\n"
 	}
 
 	fmt.Println(c.HelpText) // print unique help message
@@ -71,7 +78,7 @@ func (c *CommandLine) PrintVersion() {
 }
 
 func (c *CommandLine) PrintReport() {
-	fmt.Printf("Report for file %s\n", c.FileName)
+	fmt.Printf("Filename set:  %s\n", c.FileName)
 }
 
 func (c *CommandLine) PrintOutput() error {

@@ -11,9 +11,8 @@ func Test_CommandLine_NoArgs(t *testing.T) {
 	c := CommandLine{}
 	args1 := []string{}
 	err := c.Parse(args1)
-	expectedErr := fmt.Errorf("No arguments provided")
-	if err.Error() != expectedErr.Error() {
-		t.Errorf("Test case 1 failed. Expected error: %v, but got: %v", expectedErr, err)
+	if err != nil {
+		t.Errorf("Test case 1 failed. Expected error: <nil>, but got: %v", err)
 	}
 	expected1 := CommandLine{Debug: false, Version: false, Help: false, FileName: ""}
 	if !reflect.DeepEqual(c, expected1) {
@@ -35,7 +34,7 @@ func Test_CommandLine_Debug(t *testing.T) {
 	}
 
 	c = CommandLine{}
-	args3 := []string{"-debug"}
+	args3 := []string{"--debug"}
 	err = c.Parse(args3)
 	if err != nil {
 		t.Errorf("Test case 3 failed. Expected no error, but got: %v", err)
@@ -55,7 +54,7 @@ func Test_CommandLine_Debug(t *testing.T) {
 	}
 
 	c = CommandLine{}
-	args5 := []string{"-DEBUG"}
+	args5 := []string{"--DEBUG"}
 	err = c.Parse(args5)
 	if err != nil {
 		t.Errorf("Test case 5 failed. Expected no error, but got: %v", err)
@@ -79,7 +78,7 @@ func Test_CommandLine_Version(t *testing.T) {
 	}
 
 	cmd = CommandLine{}
-	args3 := []string{"-version"}
+	args3 := []string{"--version"}
 	err = cmd.Parse(args3)
 	if err != nil {
 		t.Errorf("Test case 3 failed. Expected no error, but got: %v", err)
@@ -99,7 +98,7 @@ func Test_CommandLine_Version(t *testing.T) {
 	}
 
 	cmd = CommandLine{}
-	args5 := []string{"-VERSION"}
+	args5 := []string{"--VERSION"}
 	err = cmd.Parse(args5)
 	if err != nil {
 		t.Errorf("Test case 5 failed. Expected no error, but got: %v", err)
@@ -123,7 +122,7 @@ func Test_CommandLine_Help(t *testing.T) {
 	}
 
 	cmd = CommandLine{}
-	args3 := []string{"-help"}
+	args3 := []string{"--help"}
 	err = cmd.Parse(args3)
 	if err != nil {
 		t.Errorf("Test case 3 failed. Expected no error, but got: %v", err)
@@ -143,7 +142,7 @@ func Test_CommandLine_Help(t *testing.T) {
 	}
 
 	cmd = CommandLine{}
-	args5 := []string{"-HELP"}
+	args5 := []string{"--HELP"}
 	err = cmd.Parse(args5)
 	if err != nil {
 		t.Errorf("Test case 5 failed. Expected no error, but got: %v", err)
@@ -204,5 +203,19 @@ func Test_CommandLine_LogToConsole__Flag(t *testing.T) {
 	expectedErr := fmt.Errorf("-o requires a log filename argument")
 	if err.Error() != expectedErr.Error() {
 		t.Errorf("Test case 8 failed. Expected: %v, but got: %v", expectedErr, err)
+	}
+}
+
+func Test_CommandLine_OutputTextFlag(t *testing.T) {
+	// Test case 10: OutputText flag is set
+	cmd := CommandLine{}
+	args10 := []string{"-i", "test input", "-o"}
+	err := cmd.Parse(args10)
+	if err != nil {
+		t.Errorf("Test case 10 failed. Expected no error, but got: %v", err)
+	}
+	expected10 := CommandLine{Debug: false, Version: false, Help: false, FileName: "", InputText: "test input", HelpText: "", VersionText: "", LogToConsole: true, LogFileName: ""}
+	if !reflect.DeepEqual(cmd, expected10) {
+		t.Errorf("Test case 10 failed. Expected: %v, but got: %v", expected10, cmd)
 	}
 }
