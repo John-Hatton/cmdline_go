@@ -166,3 +166,29 @@ func Test_CommandLine_FileNameFlag(t *testing.T) {
 		t.Errorf("Test case 6 failed. Expected: %v, but got: %v", expected6, cmd)
 	}
 }
+
+func Test_CommandLine_LogToConsoleFlag(t *testing.T) {
+	// Test case 7: LogToConsole flag is set
+	cmd := CommandLine{}
+	args7 := []string{"-o", "-l", "test.log"}
+	err := cmd.Parse(args7)
+	if err != nil {
+		t.Errorf("Test case 7 failed. Expected no error, but got: %v", err)
+	}
+	expected7 := CommandLine{Debug: false, Version: false, Help: false, FileName: "", InputText: "", HelpText: "", VersionText: "", LogToConsole: true, LogFileName: "test.log"}
+	if !reflect.DeepEqual(cmd, expected7) {
+		t.Errorf("Test case 7 failed. Expected: %v, but got: %v", expected7, cmd)
+	}
+
+	// Test case 8: LogToConsole flag is set, but LogFileName is not provided
+	cmd = CommandLine{}
+	args8 := []string{"-o"}
+	err = cmd.Parse(args8)
+	if err == nil {
+		t.Errorf("Test case 8 failed. Expected an error, but got none")
+	}
+	expectedErr := fmt.Errorf("-o requires a log filename argument")
+	if err.Error() != expectedErr.Error() {
+		t.Errorf("Test case 8 failed. Expected: %v, but got: %v", expectedErr, err)
+	}
+}
