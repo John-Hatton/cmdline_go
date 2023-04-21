@@ -59,13 +59,13 @@ func (c *CommandLine) Parse(args []string) error {
 }
 
 func (c *CommandLine) PrintHelp() {
-	fmt.Println("Usage: myprogram [OPTIONS]")
+	fmt.Println("Usage: cmdline [OPTIONS]")
 	fmt.Println("")
 	fmt.Println("Options:")
 	fmt.Println("  -d, -debug  Set DEBUG flag true")
-	fmt.Println("  -v, -version  Print version number and die")
-	fmt.Println("  -h, -help  Print this table and die")
-	fmt.Println("  -f FILENAME  Print report and die")
+	fmt.Println("  -v, -version  Print version number")
+	fmt.Println("  -h, -help  Print this table")
+	fmt.Println("  -f FILENAME  Print report about File")
 }
 
 func (c *CommandLine) PrintVersion() {
