@@ -1,0 +1,30 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: Build and Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' cmdline_go.go)
+          echo "Creating release $VERSION"
+          go get github.com/mitchellh/gox
+          mkdir -p build
+          gox -osarch="linux/amd64 darwin/amd64 windows/amd64" -output="build/cmdline_go_{{.OS}}_{{.Arch}}" -ldflags "-X main.version=$VERSION" ./cmdline_go
+          for f in build/*; do
+            echo "Uploading $f"
+            gh release upload -R ${{ github.repository }} --clobber $VERSION $f
+          done
