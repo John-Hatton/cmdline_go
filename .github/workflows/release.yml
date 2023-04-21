@@ -21,7 +21,7 @@ jobs:
         run: |
           VERSION=$(grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' cmdline_go.go)
           echo "Creating release $VERSION"
-          go get github.com/mitchellh/gox
+          go install github.com/mitchellh/gox
           mkdir -p build
           gox -osarch="linux/amd64 darwin/amd64 windows/amd64" -output="build/cmdline_go_{{.OS}}_{{.Arch}}" -ldflags "-X main.version=$VERSION" ./cmdline_go
           for f in build/*; do
