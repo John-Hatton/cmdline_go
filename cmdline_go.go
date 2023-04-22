@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const version = "1.2.3"
+const version = "1.2.4"
 
 type CommandLine struct {
 	Input        bool
@@ -17,11 +17,11 @@ type CommandLine struct {
 	Help         bool
 	FileName     string
 	InputText    string
-	OutputText   string // new field to store output text
+	OutputText   string
 	HelpText     string
 	VersionText  string
-	LogToConsole bool   // new flag to log output to console
-	LogFileName  string // new flag to specify log file name
+	LogToConsole bool
+	LogFileName  string
 }
 
 func (c *CommandLine) Parse(args []string) error {
@@ -115,5 +115,36 @@ func (c *CommandLine) PrintOutput() error {
 			fmt.Fprintln(logFile, c.OutputText)
 		}
 	}
+	return nil
+}
+
+func (c *CommandLine) Process() error {
+	if c.Help {
+		c.PrintHelp()
+		os.Exit(0)
+	}
+
+	if c.Version {
+		c.PrintVersion()
+		os.Exit(0)
+	}
+
+	if c.FileName != "" {
+		c.PrintReport()
+	}
+
+	//if c.InputText != "" {
+	//	c.OutputText = c.InputText
+	//}
+
+	if c.OutputText == "" {
+		return fmt.Errorf(`This program requires -i for input. See -h for more`)
+	}
+
+	err := c.PrintOutput()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
