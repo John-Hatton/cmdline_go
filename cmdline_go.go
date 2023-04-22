@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const version = "1.2.2"
+const version = "1.2.3"
 
 type CommandLine struct {
 	Input        bool
@@ -53,7 +53,11 @@ func (c *CommandLine) Parse(args []string) error {
 				c.Output = true
 				c.LogToConsole = false
 				i++
+				continue // Skip to the next iteration since we have already consumed the next argument
 			}
+			// If no argument provided, fall back to logging output to console
+			c.LogToConsole = true
+			c.Output = true
 		case "-l", "-L", "--logfile", "--LOGFILE":
 			i++
 			if i >= len(args) {
@@ -71,7 +75,7 @@ func (c *CommandLine) Parse(args []string) error {
 
 func (c *CommandLine) PrintHelp() {
 	if c.HelpText == "" {
-		c.HelpText = "Usage: cmdline_go [OPTIONS]\n\nOptions:\n  -d, --debug        Set DEBUG flag true\n  -v, --version      Print version number\n  -h, --help         Print this table\n  -f FILENAME        Take a file in as input\n  -i INPUT_STRING    Process an input string\n  -o LOG_TO_CONSOLE  Log output to console\n  -l LOG_FILENAME    Save output to log file\n"
+		c.HelpText = "Usage: cmdline_go [OPTIONS]\n\nOptions:\n  -d, --debug        Set DEBUG flag true\n  -v, --version      Print version number\n  -h, --help         Print this table\n  -f FILENAME        Take a file in as input\n  -i INPUT_STRING    Process an input string\n  -o [LOG_TO_FILE]   Log output to file (default: console)\n  -l LOG_FILENAME    Save output to log file\n"
 	}
 	fmt.Println(c.HelpText) // print unique help message
 }
@@ -90,51 +94,26 @@ func (c *CommandLine) PrintReport() {
 
 func (c *CommandLine) PrintOutput() error {
 	if c.LogToConsole {
-		if c.LogFileName == "" {
-			return fmt.Errorf("-o requires a log filename argument")
+		if c.LogFileName != "" {
+			logFile, err := os.Create(c.LogFileName)
+			if err != nil {
+				return err
+			}
+			defer logFile.Close()
+			fmt.Fprintln(logFile, c.OutputText)
+		} else {
+			fmt.Println(c.OutputText)
 		}
-		logFile, err := os.Create(c.LogFileName)
-		if err != nil {
-			return fmt.Errorf("Error creating log file: %v", err)
-		}
-		defer logFile.Close()
-		if c.Debug {
-			fmt.Fprintf(os.Stderr, "Logging to file%s\n", c.LogFileName)
-		}
-		fmt.Fprintln(logFile, c.OutputText)
 	} else {
 		fmt.Println(c.OutputText)
+		if c.Log {
+			logFile, err := os.Create(c.LogFileName)
+			if err != nil {
+				return err
+			}
+			defer logFile.Close()
+			fmt.Fprintln(logFile, c.OutputText)
+		}
 	}
-	return nil
-}
-
-func (c *CommandLine) Process() error {
-	if c.Help {
-		c.PrintHelp()
-		os.Exit(0)
-	}
-
-	if c.Version {
-		c.PrintVersion()
-		os.Exit(0)
-	}
-
-	if c.FileName != "" {
-		c.PrintReport()
-	}
-
-	if c.InputText != "" {
-		c.OutputText = c.InputText
-	}
-
-	if c.OutputText == "" {
-		return fmt.Errorf("no input provided")
-	}
-
-	err := c.PrintOutput()
-	if err != nil {
-		return err
-	}
-
 	return nil
 }

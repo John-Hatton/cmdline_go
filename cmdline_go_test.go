@@ -188,7 +188,7 @@ func Test_CommandLine_OutputTextFlag(t *testing.T) {
 	if err != nil {
 		t.Errorf("Test case 10 failed. Expected no error, but got: %v", err)
 	}
-	expected10 := CommandLine{Input: true, Debug: false, Version: false, Help: false, FileName: "", InputText: "test input", HelpText: "", VersionText: "", LogToConsole: false, LogFileName: ""}
+	expected10 := CommandLine{Input: true, Output: true, Debug: false, Version: false, Help: false, FileName: "", InputText: "test input", HelpText: "", VersionText: "", LogToConsole: true, LogFileName: ""}
 	if !reflect.DeepEqual(cmd, expected10) {
 		t.Errorf("Test case 10 failed. Expected: %v, but got: %v", expected10, cmd)
 	}
