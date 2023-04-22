@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const version = "1.2.4"
+const version = "1.2.5"
 
 type CommandLine struct {
 	Input        bool
@@ -133,9 +133,9 @@ func (c *CommandLine) Process() error {
 		c.PrintReport()
 	}
 
-	//if c.InputText != "" {
-	//	c.OutputText = c.InputText
-	//}
+	if c.InputText != "" {
+		c.OutputText = c.InputText
+	}
 
 	if c.OutputText == "" {
 		return fmt.Errorf(`This program requires -i for input. See -h for more`)
