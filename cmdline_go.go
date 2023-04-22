@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const version = "1.2.0"
+const version = "1.2.1"
 
 type CommandLine struct {
 	Input        bool
@@ -71,7 +71,7 @@ func (c *CommandLine) Parse(args []string) error {
 
 func (c *CommandLine) PrintHelp() {
 	if c.HelpText == "" {
-		c.HelpText = "Usage: cmdline_go [OPTIONS]\n\nOptions:\n  -d, --debug        Set DEBUG flag true\n  -v, --version      Print version number\n  -h, --help         Print this table\n  -f FILENAME       Set Filename\n  -i INPUT_STRING   Process an input string\n  -o LOG_TO_CONSOLE Log output to console\n  -l LOG_FILENAME   Save output to log file\n"
+		c.HelpText = "Usage: cmdline_go [OPTIONS]\n\nOptions:\n  -d, --debug        Set DEBUG flag true\n  -v, --version      Print version number\n  -h, --help         Print this table\n  -f FILENAME        Take a file in as input\n  -i INPUT_STRING    Process an input string\n  -o LOG_TO_CONSOLE  Log output to console\n  -l LOG_FILENAME    Save output to log file\n"
 	}
 	fmt.Println(c.HelpText) // print unique help message
 }
@@ -123,9 +123,9 @@ func (c *CommandLine) Process() error {
 		c.PrintReport()
 	}
 
-	if c.InputText != "" {
-		c.OutputText = c.InputText
-	}
+	//if c.InputText != "" {
+	//	c.OutputText = c.InputText
+	//}
 
 	if c.OutputText == "" {
 		return fmt.Errorf("no input provided")
